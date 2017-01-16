@@ -1,7 +1,7 @@
 {
   "name": "reazy-cli",
   "description": "Command-line Reazy generator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/GeekyAnts/reazy-cli",
   "main": "lib/",
   "bin": {

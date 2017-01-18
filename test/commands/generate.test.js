@@ -3,24 +3,20 @@ import assert from 'assert';
 import vorpalBuilder from 'vorpal';
 import commands, { env } from '../../src/commands/generate';
 
-describe('feathers-cli', () => {
+describe('reazy-cli', () => {
 
   const vorpal = vorpalBuilder();
   commands(vorpal);
 
-  describe('generator-feathers registration', () => {
+  describe('generator-reazy registration', () => {
     it('has registered the generator name', () => {
-      assert(_.includes(env.getGeneratorNames(), 'feathers'));
+      assert(_.includes(env.getGeneratorNames(), 'reazy'));
     });
 
     it('registers all namespaces', () => {
       let expected = [
-        'feathers:app',
-        'feathers:hook',
-        'feathers:middleware',
-        'feathers:model',
-        'feathers:service',
-        'feathers:plugin'
+        'reazy:app',
+        'reazy:service'
       ];
 
       assert.equal(_.difference(expected, env.namespaces()).length, 0, `namespaces() is incomplete: ${env.namespaces()}`);

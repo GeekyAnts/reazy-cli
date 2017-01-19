@@ -19,7 +19,7 @@ export default function() {
     app.log('Type "exit" to quit, "help" for a list of commands.');
 
     app
-      .delimiter('feathers$')
+      .delimiter('reazy$')
       .show();
   }
 }

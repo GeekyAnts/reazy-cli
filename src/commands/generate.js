@@ -2,10 +2,11 @@ import yeoman from 'yeoman-environment';
 
 const env = yeoman.createEnv();
 
-const feathersGenerators = 'generator-reazy/generators';
+const reazyGenerators = 'generator-reazy/generators';
 
-env.register(require.resolve(`${feathersGenerators}/app`), 'reazy:app');
-env.register(require.resolve(`${feathersGenerators}/service`), 'reazy:service');
+env.register(require.resolve(`${reazyGenerators}/app`), 'reazy:app');
+env.register(require.resolve(`${reazyGenerators}/service`), 'reazy:service');
+env.register(require.resolve(`${reazyGenerators}/install-plugin`), 'reazy:install-plugin');
 
 const generatorOptions = {
   disableNotifyUpdate: true
@@ -42,6 +43,14 @@ export default function(vorpal) {
     .action(function (args, callback) {
       this.log('');
       env.run('reazy:service', generatorOptions, callback);
+    });
+
+  vorpal
+    .command('add [plugin]')
+    .description('add a new plugin')
+    .autocomplete(['native-config'])
+    .action(function (args, callback) {
+      env.run('reazy:install-plugin', args, callback);
     });
 }
 

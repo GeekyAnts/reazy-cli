@@ -2,7 +2,7 @@ import yeoman from 'yeoman-environment';
 
 const env = yeoman.createEnv();
 
-const reazyGenerators = 'generator-reazy/generators';
+const reazyGenerators = 'generator-reazy/dist/generators';
 
 env.register(require.resolve(`${reazyGenerators}/app`), 'reazy:app');
 env.register(require.resolve(`${reazyGenerators}/service`), 'reazy:service');

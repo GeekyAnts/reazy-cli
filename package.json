@@ -41,7 +41,7 @@
   },
   "preferGlobal": true,
   "dependencies": {
-    "generator-reazy": "0.1.5",
+    "generator-reazy": "0.1.7",
     "vorpal": "^1.10.9",
     "yeoman-environment": "^1.5.2",
     "yo": "=1.7.1"

@@ -1,6 +1,6 @@
 {
   "name": "reazy-cli",
-  "version": "0.1.8",
+  "version": "0.1.7",
   "license": "Apache-2.0",
   "description": "Reazy CLI tools",
   "main": "index.js",

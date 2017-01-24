@@ -1,0 +1,26 @@
+{
+  "name": "reazy-cli",
+  "version": "0.1.8",
+  "license": "Apache-2.0",
+  "description": "Reazy CLI tools",
+  "main": "index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GeekyAnts/reazy-cli.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "bin": {
+    "reazy": "index.js"
+  },
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "minimist": "^1.2.0",
+    "prompt": "^0.2.14",
+    "semver": "^5.0.3"
+  }
+}

@@ -8,6 +8,7 @@ var execSync = require('child_process').execSync;
 var chalk = require('chalk');
 var prompt = require('prompt');
 var semver = require('semver');
+var ora = require('ora');
 /**
  * Used arguments:
  *   -v --version - to print current version of react-native-cli and react-native dependency
@@ -160,21 +161,34 @@ function run(root, projectName, options) {
   // E.g. '0.38' or '/path/to/archive.tgz'
   const reazyPackage = options.version;
   var installCommand;
-  console.log('Installing ' + getInstallPackage(reazyPackage) + '...');
+  // console.log('Installing ' + getInstallPackage(reazyPackage) + '...');
   installCommand = 'npm install --save --save-exact ' + getInstallPackage(reazyPackage);
   if (options.verbose) {
     installCommand += ' --verbose';
   }
-  try {
-    execSync(installCommand, {stdio: 'inherit'});
-  } catch (err) {
-    console.error(err);
-    console.error('Command `' + installCommand + '` failed.');
-    process.exit(1);
-  }
-  checkNodeVersion();
-  cli = require(CLI_MODULE_PATH());
-  cli.default.init(root, projectName, options._[1]);
+  var spinner = ora('Installing ' + getInstallPackage(reazyPackage)).start();
+  // try {
+  //   execSync(installCommand);
+  // } catch (err) {
+  //   console.error(err);
+  //   console.error('Command `' + installCommand + '` failed.');
+  //   process.exit(1);
+  // }
+
+  exec(installCommand, (error, stdout, stderr) => {
+    if (error) {
+      spinner.fail('Installation failed');
+      console.error(error);
+      console.error('Command `' + installCommand + '` failed.');
+      process.exit(1);
+    }
+    spinner.succeed('Installed ' + getInstallPackage(reazyPackage));
+    checkNodeVersion();
+    cli = require(CLI_MODULE_PATH());
+    cli.default.init(root, projectName, options._[1]);
+  });
+
+
 }
 
 function checkNodeVersion() {

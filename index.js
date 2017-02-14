@@ -65,7 +65,7 @@ if (cli && (commands[0] !== 'init')) {
       '',
       '  Commands:',
       '',
-      '    init <projectType> generates a new project and installs its dependencies',
+      '    init <ProjectName> [ProjectType] generates a new project and installs its dependencies',
       '',
       '  Options:',
       '',
@@ -85,7 +85,14 @@ if (cli && (commands[0] !== 'init')) {
 
   switch (commands[0]) {
   case 'init':
-    init(options);
+    if (!commands[1]) {
+      console.error(
+        'Usage: reazy init <ProjectName> [ProjectType]'
+      );
+      process.exit(1);
+    } else {
+      init(commands[1], options);
+    }
     break;
   default:
     console.error(
@@ -125,15 +132,46 @@ function validateProjectName(name) {
  * @param options.npm If true, always use the npm command line client,
  *                       don't use yarn even if available.
  */
-function init(options) {
-  createProject(options);
+function init(name, options) {
+  validateProjectName(name);
+
+  if (fs.existsSync(name)) {
+    createAfterConfirmation(name, options);
+  } else {
+    createProject(name, options);
+  }
 }
 
-function createProject(options) {
-  var root = path.resolve();
+function createAfterConfirmation(name, options) {
+  prompt.start();
+
+  var property = {
+    name: 'yesno',
+    message: 'Directory ' + name + ' already exists. Continue?',
+    validator: /y[es]*|n[o]?/,
+    warning: 'Must respond yes or no',
+    default: 'no'
+  };
+
+  prompt.get(property, function (err, result) {
+    if (result.yesno[0] === 'y') {
+      createProject(name, options);
+    } else {
+      console.log('Project initialization cancelled');
+      process.exit();
+    }
+  });
+}
+
+function createProject(name, options) {
+  var root = path.resolve(name);
   var projectName = path.basename(root);
 
   console.log('This will walk you through creating a new Reazy project');
+
+  if (!fs.existsSync(root)) {
+    fs.mkdirSync(root);
+  }
 
   var packageJson = {
     name: projectName,
@@ -141,6 +179,7 @@ function createProject(options) {
     private: true
   };
   fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(packageJson));
+  process.chdir(root);
 
   run(root, projectName, options);
 }
@@ -167,13 +206,6 @@ function run(root, projectName, options) {
     installCommand += ' --verbose';
   }
   var spinner = ora('Installing ' + getInstallPackage(reazyPackage)).start();
-  // try {
-  //   execSync(installCommand);
-  // } catch (err) {
-  //   console.error(err);
-  //   console.error('Command `' + installCommand + '` failed.');
-  //   process.exit(1);
-  // }
 
   exec(installCommand, (error, stdout, stderr) => {
     if (error) {
@@ -185,7 +217,7 @@ function run(root, projectName, options) {
     spinner.succeed('Installed ' + getInstallPackage(reazyPackage));
     checkNodeVersion();
     cli = require(CLI_MODULE_PATH());
-    cli.default.init(root, projectName, options._[1]);
+    cli.default.init(root, projectName, options._[2]);
   });
 
 

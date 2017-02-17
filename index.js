@@ -133,8 +133,6 @@ function validateProjectName(name) {
  *                       don't use yarn even if available.
  */
 function init(name, options) {
-  validateProjectName(name);
-
   if (fs.existsSync(name)) {
     createAfterConfirmation(name, options);
   } else {

@@ -54,7 +54,7 @@ if (fs.existsSync(cliPath)) {
 }
 
 var commands = options._;
-if (cli && (commands[0] !== 'init')) {
+if (cli) {
   cli.default.run(options);
 } else {
   if (options._.length === 0 && (options.h || options.help)) {

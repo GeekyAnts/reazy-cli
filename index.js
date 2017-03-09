@@ -43,6 +43,21 @@ var REAZY_PACKAGE_JSON_PATH = function() {
   );
 };
 
+function getYarnVersionIfAvailable() {
+  var yarnVersion;
+  try {
+    // execSync returns a Buffer -> convert to string
+    if (process.platform.startsWith('win')) {
+      yarnVersion = (execSync('yarn --version').toString() || '').trim();
+    } else {
+      yarnVersion = (execSync('yarn --version 2>/dev/null').toString() || '').trim();
+    }
+  } catch (error) {
+    return null;
+  }
+  return yarnVersion;
+}
+
 if (options._.length === 0 && (options.v || options.version)) {
   printVersionsAndExit(REAZY_PACKAGE_JSON_PATH());
 }
@@ -190,6 +205,9 @@ function getInstallPackage(reazyPackage) {
   } else if (reazyPackage) {
     // for tar.gz or alternative paths
     packageToInstall = reazyPackage;
+    if(getYarnVersionIfAvailable()) {
+      packageToInstall = 'file:' + reazyPackage;
+    }
   }
   return packageToInstall;
 }
@@ -197,12 +215,23 @@ function getInstallPackage(reazyPackage) {
 function run(root, projectName, options) {
   // E.g. '0.38' or '/path/to/archive.tgz'
   const reazyPackage = options.version;
+  const yarnVersion = getYarnVersionIfAvailable();
   var installCommand;
-  // console.log('Installing ' + getInstallPackage(reazyPackage) + '...');
-  installCommand = 'npm install --save --save-exact ' + getInstallPackage(reazyPackage);
-  if (options.verbose) {
-    installCommand += ' --verbose';
+  
+  if (yarnVersion) {
+    console.log('Using yarn v' + yarnVersion);
+    installCommand = 'yarn add ' + getInstallPackage(reazyPackage) + ' --exact';
+    if (options.verbose) {
+      installCommand += ' --verbose';
+    }
+  } else {
+    console.log('Consider installing yarn to make this faster: https://yarnpkg.com');
+    installCommand = 'npm install --save --save-exact ' + getInstallPackage(reazyPackage);
+    if (options.verbose) {
+      installCommand += ' --verbose';
+    }
   }
+
   var spinner = ora('Installing ' + getInstallPackage(reazyPackage)).start();
 
   exec(installCommand, (error, stdout, stderr) => {

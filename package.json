@@ -4,6 +4,7 @@
   "license": "Apache-2.0",
   "description": "Reazy CLI tools",
   "main": "index.js",
+  "preferGlobal": true,
   "engines": {
     "node": ">=4"
   },
